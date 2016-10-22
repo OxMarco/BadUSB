@@ -14,5 +14,5 @@ The features still to be fully implemented/functional:
 
 ## Problems
 Here are a couple of issues that needs to be fixed:
-* Sometimes the firts time the unit is plugged in, the script doesnt get executed;
+* Sometimes the first time the unit is plugged in, the script doesn't get executed;
 * A few systems will prompt new hardware installation window and may take a couple of minutes to install the proper drivers (even though the DigiSpark acts as a typical USB keyboard).
