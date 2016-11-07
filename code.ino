@@ -6,8 +6,8 @@ Code to be run on DigiSpark compatible boards
 #include "DigiKeyboard.h"
 
 // define server IP and port
-#define IP 0.0.0.0
-#define PORT 80
+#define IP "0.0.0.0"
+#define PORT "0"
 
 static int run;
 
