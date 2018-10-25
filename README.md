@@ -7,6 +7,10 @@ There is a switch that allows to select which OS to target, either Windows or Un
 
 When the unit is plugged in, a new terminal window is opened and a reverse shell on port 8080 is established, without prompting anything to the user. When the script has run, the led will start blinking until unplugged from the USB port.
 
+## HowTo
+Simply run __nc -l PORT__ on your machine in order to listen to the incoming connections.
+Other uses may involve an automatic meterpeter session with permanent payload deployment.
+
 ## Under Development
 The features still to be fully implemented/functional:
 * Non-US keyboard layout;
