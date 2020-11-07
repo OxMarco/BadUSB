@@ -1,6 +1,5 @@
 /*
- * BadUSB - HID Reverse TCP attack for Win, Mac and Unix OS - Last update 25/10/2018 - Copyright (c) by grcasanova
- *
+ * BadUSB - HID Reverse TCP attack for Win, Mac and Unix OS - Last update 25/10/2018
  * change IP and PORT constants to match the attacking machine details
  *
 */
